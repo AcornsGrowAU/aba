@@ -99,6 +99,35 @@ puts aba.errors
 Validation errors will stop parsing of the data to an ABA formatted string using
 `to_s`. `aba.to_s` will raise a `RuntimeError` instead of returning output.
 
+Parsing existing ABA file
+
+```ruby
+require 'aba'
+
+collection = Aba.parse("/Users/me/dd_1443106832.aba")
+
+collection.count # Number of batches
+
+# Collection is just an array of batches
+collection.each do |batch|
+  batch.bsb
+  batch.financial_institution
+  batch.user_name
+  batch.user_id
+  batch.description
+  batch.process_at
+  
+  batch.net_total_amount # Amount in cents
+  batch.credit_total_amount # Amount in cents
+  batch.debit_total_amount # Amount in cents
+  batch.count # Number of transactions in the batch
+  
+  batch.transactions # Collection of transactions 
+end
+```
+
+Parser errors will stop parsing rest of the ABA file and will raise
+a `Aba::Parser::Error` exception with proper message instead of returning output.
 
 ## Installation
 
