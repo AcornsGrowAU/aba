@@ -2,7 +2,8 @@ class Aba
   class Batch
     include Aba::Validations
 
-    attr_accessor :bsb, :financial_institution, :user_name, :user_id, :description, :process_at, :transactions
+    attr_reader :transactions
+    attr_accessor :bsb, :financial_institution, :user_name, :user_id, :description, :process_at
 
     # BSB
     validates_bsb         :bsb, allow_blank: true
