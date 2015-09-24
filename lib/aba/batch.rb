@@ -2,8 +2,10 @@ class Aba
   class Batch
     include Aba::Validations
 
-    attr_reader :transactions
-    attr_accessor :bsb, :financial_institution, :user_name, :user_id, :description, :process_at
+    attr_reader :transactions, :net_total_amount, :credit_total_amount,
+      :debit_total_amount
+    attr_accessor :bsb, :financial_institution, :user_name, :user_id,
+      :description, :process_at
 
     # BSB
     validates_bsb         :bsb, allow_blank: true
@@ -36,6 +38,9 @@ class Aba
       end
 
       @transactions = []
+      @net_total_amount    = 0
+      @credit_total_amount = 0
+      @debit_total_amount  = 0
 
       unless transactions.nil? || transactions.empty?
         transactions.to_a.each do |t|
@@ -68,6 +73,10 @@ class Aba
       end
 
       @transactions.push(transaction)
+      @net_total_amount += transaction.amount.to_i
+      @credit_total_amount += transaction.amount.to_i if transaction.amount.to_i > 0
+      @debit_total_amount += transaction.amount.to_i if transaction.amount.to_i < 0
+
       transaction
     end
 
@@ -91,6 +100,10 @@ class Aba
       all_errors[:transactions] = transaction_error_collection unless transaction_error_collection.empty?
 
       all_errors unless all_errors.empty?
+    end
+
+    def count
+      @transactions.count
     end
 
     private
@@ -159,15 +172,6 @@ class Aba
     end
 
     def batch_control_record
-      net_total_amount    = 0
-      credit_total_amount = 0
-      debit_total_amount  = 0
-
-      @transactions.each do |t|
-        net_total_amount += t.amount.to_i
-        credit_total_amount += t.amount.to_i if t.amount.to_i > 0
-        debit_total_amount += t.amount.to_i if t.amount.to_i < 0
-      end
 
       # Record type
       # Max: 1
@@ -207,7 +211,7 @@ class Aba
       # Total Item Count
       # Max: 6
       # Char position: 75-80
-      output += @transactions.size.to_s.rjust(6, "0")
+      output += count.to_s.rjust(6, "0")
 
       # Reserved
       # Max: 40
