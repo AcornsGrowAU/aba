@@ -2,14 +2,30 @@
 
 # Aba
 
-Generates ABA (Australian Banking Association) file format output
+Generates ABA (Australian Banking Association) file format output.
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'aba'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install aba
 
 ## Usage
+
+#### Working with a batch
 
 ```ruby
 require 'aba'
 
-# Initialise ABA
+# Initialise ABA batch
 aba = Aba.batch(
   bsb: "123-345", # Optional (Not required by NAB)
   financial_institution: "WPC",
@@ -24,6 +40,7 @@ aba = Aba.batch(
   aba.add_transaction(
     {
       bsb: "342-342",
+      indicator: "W",
       account_number: "3244654",
       amount: 10000, # Amount in cents
       account_name: "John Doe",
@@ -31,7 +48,8 @@ aba = Aba.batch(
       lodgement_reference: "R435564",
       trace_bsb: "453-543",
       trace_account_number: "45656733",
-      name_of_remitter: "Remitter"
+      name_of_remitter: "Remitter",
+      witholding_amount: 100 # Amount in cents
     }
   )
 end
@@ -99,7 +117,8 @@ puts aba.errors
 Validation errors will stop parsing of the data to an ABA formatted string using
 `to_s`. `aba.to_s` will raise a `RuntimeError` instead of returning output.
 
-Parsing existing ABA file
+
+#### Parsing existing ABA file
 
 ```ruby
 require 'aba'
@@ -128,20 +147,6 @@ end
 
 Parser errors will stop parsing rest of the ABA file and will raise
 a `Aba::Parser::Error` exception with proper message instead of returning output.
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'aba'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install aba
 
 ## Contributing
 
