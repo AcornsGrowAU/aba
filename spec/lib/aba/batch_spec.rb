@@ -90,7 +90,7 @@ describe Aba::Batch do
       transaction = instance_double(
         Aba::Transaction,
         :amount => 123,
-        :'instance_of?' => true
+        :'kind_of?' => true
       )
 
       subject.add_transaction(transaction)
@@ -102,7 +102,7 @@ describe Aba::Batch do
       transaction = instance_double(
         Aba::Transaction,
         amount: 12345,
-        :'instance_of?' => true
+        :'kind_of?' => true
       )
 
       expect{ subject.add_transaction(transaction) }
@@ -115,7 +115,7 @@ describe Aba::Batch do
         transaction = instance_double(
           Aba::Transaction,
           amount: 34567,
-          :'instance_of?' => true
+          :'kind_of?' => true
         )
 
         expect{ subject.add_transaction(transaction) }
@@ -129,7 +129,7 @@ describe Aba::Batch do
         transaction = instance_double(
           Aba::Transaction,
           amount: -56789,
-          :'instance_of?' => true
+          :'kind_of?' => true
         )
 
         expect{ subject.add_transaction(transaction) }
@@ -144,13 +144,13 @@ describe Aba::Batch do
       it "returns false" do
         transaction_1 = instance_double(
           Aba::Transaction,
-          :'instance_of?' => true,
+          :'kind_of?' => true,
           :amount => 123,
           :'valid?' => true
         )
         transaction_2 = instance_double(
           Aba::Transaction,
-          :'instance_of?' => true,
+          :'kind_of?' => true,
           :amount => 456,
           :'valid?' => false
         )
@@ -165,13 +165,13 @@ describe Aba::Batch do
       it "returns true" do
         transaction_1 = instance_double(
           Aba::Transaction,
-          :'instance_of?' => true,
+          :'kind_of?' => true,
           :amount => 123,
           :'valid?' => true
         )
         transaction_2 = instance_double(
           Aba::Transaction,
-          :'instance_of?' => true,
+          :'kind_of?' => true,
           :amount => 456,
           :'valid?' => true
         )
