@@ -66,7 +66,7 @@ class Aba
     end
 
     def add_transaction(attrs = {})
-      if attrs.instance_of?(Aba::Transaction)
+      if attrs.kind_of?(Aba::Transaction)
         transaction = attrs
       else
         transaction = Aba::Transaction.new(attrs)
