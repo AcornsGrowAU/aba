@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Aba::Parser::Transaction do
+describe Aba::Parser::Activity do
   it { is_expected.to be_a_kind_of(Aba::Parser::Line) }
 
   it "defines RECORD_TYPE constant with value '1'" do

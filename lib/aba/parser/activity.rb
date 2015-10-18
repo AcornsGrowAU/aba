@@ -1,6 +1,6 @@
 class Aba
   class Parser
-    class Transaction < Line
+    class Activity < Line
       RECORD_TYPE = "1"
 
       def self.record_type

@@ -1,6 +1,6 @@
 require 'aba/parser/line'
 require 'aba/parser/headers'
-require 'aba/parser/transaction'
+require 'aba/parser/activity'
 require 'aba/parser/summary'
 
 class Aba
@@ -29,8 +29,8 @@ class Aba
 
       if Aba::Parser::Headers.contains_valid_record_type?(line)
         @batch = Aba::Batch.new(Aba::Parser::Headers.parse(line))
-      elsif Aba::Parser::Transaction.contains_valid_record_type?(line)
-        @batch.add_transaction(Aba::Parser::Transaction.parse(line))
+      elsif Aba::Parser::Activity.contains_valid_record_type?(line)
+        @batch.add_transaction(Aba::Parser::Activity.parse(line))
       elsif Aba::Parser::Summary.contains_valid_record_type?(line)
         summary = Aba::Parser::Summary.parse(line)
         if summary_compatible_with_batch?(summary, @batch)
