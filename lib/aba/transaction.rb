@@ -2,6 +2,9 @@ class Aba
   class Transaction
     include Aba::Validations
 
+    CREDIT_TRANSACTION_CODES = [50]
+    DEBIT_TRANSACTION_CODES = [13]
+
     attr_accessor :account_number, :transaction_code, :amount, :account_name,
                   :bsb, :trace_bsb, :trace_account_number, :name_of_remitter,
                   :witholding_amount, :indicator, :lodgement_reference
@@ -42,6 +45,14 @@ class Aba
       attrs.each do |key, value|
         send("#{key}=", value)
       end
+    end
+
+    def is_credit?
+      CREDIT_TRANSACTION_CODES.include?(transaction_code)
+    end
+
+    def is_debit?
+      DEBIT_TRANSACTION_CODES.include?(transaction_code)
     end
 
     # Allow dashes to be input, but remove them from output

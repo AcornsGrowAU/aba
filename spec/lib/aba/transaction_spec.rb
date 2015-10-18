@@ -18,6 +18,42 @@ describe Aba::Transaction do
   } }
   subject(:transaction) { Aba::Transaction.new(transaction_params) }
 
+  describe "#is_credit?" do
+    context "when transaction is credit type" do
+      it "returns true" do
+        subject.transaction_code = described_class::CREDIT_TRANSACTION_CODES.sample
+
+        expect(subject.is_credit?).to be_truthy
+      end
+    end
+
+    context "when transaction is debit type" do
+      it "returns false" do
+        subject.transaction_code = described_class::DEBIT_TRANSACTION_CODES.sample
+
+        expect(subject.is_credit?).to be_falsey
+      end
+    end
+  end
+
+  describe "#is_debit?" do
+    context "when transaction is debit type" do
+      it "returns true" do
+        subject.transaction_code = described_class::DEBIT_TRANSACTION_CODES.sample
+
+        expect(subject.is_debit?).to be_truthy
+      end
+    end
+
+    context "when transaction is credit type" do
+      it "returns false" do
+        subject.transaction_code = described_class::CREDIT_TRANSACTION_CODES.sample
+
+        expect(subject.is_debit?).to be_falsey
+      end
+    end
+  end
+
   describe "#to_s" do
     it "should create a transaction row" do
       expect(subject.to_s).to include("1345-453 23432342W530000050050John Doe                        R45343            123-234  4647642Remitter        00000087")
