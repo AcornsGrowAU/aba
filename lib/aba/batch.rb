@@ -74,8 +74,8 @@ class Aba
 
       @transactions.push(transaction)
       @net_total_amount += transaction.amount.to_i
-      @credit_total_amount += transaction.amount.to_i if transaction.amount.to_i > 0
-      @debit_total_amount += transaction.amount.to_i if transaction.amount.to_i < 0
+      @credit_total_amount += transaction.amount.to_i if transaction.is_credit?
+      @debit_total_amount += transaction.amount.to_i if transaction.is_debit?
 
       transaction
     end

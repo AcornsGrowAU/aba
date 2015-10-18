@@ -33,17 +33,35 @@ describe Aba::Batch do
   end
 
   describe "#to_s" do
-    let(:transaction_values) { [30, -20] }
-    let(:transactions) do
-      transaction_values.map do |amount|
-        Aba::Transaction.new(bsb: '342-342', account_number: '3244654', amount: amount,
-        account_name: 'John Doe', transaction_code: 53,
-        lodgement_reference: 'R435564', trace_bsb: '453-543',
-        trace_account_number: '45656733', name_of_remitter: 'Remitter')
-      end
+    let(:raw_transaction) do
+      Aba::Transaction.new(
+        bsb: '342-342',
+        account_number: '3244654',
+        account_name: 'John Doe',
+        lodgement_reference: 'R435564',
+        trace_bsb: '453-543',
+        trace_account_number: '45656733',
+        name_of_remitter: 'Remitter'
+      )
     end
 
-    before { transactions.each { |trx| subject.add_transaction(trx) } }
+    before do
+      # Credit transactions
+      [40, 30].each do |amount|
+        transaction = raw_transaction.clone
+        transaction.transaction_code = 50
+        transaction.amount = amount
+        subject.add_transaction(transaction)
+      end
+
+      # Debit transactions
+      [20, 10].each do |amount|
+        transaction = raw_transaction.clone
+        transaction.transaction_code = 13
+        transaction.amount = amount
+        subject.add_transaction(transaction)
+      end
+    end
 
     context 'when descriptive record' do
       context 'without bsb' do
@@ -63,23 +81,17 @@ describe Aba::Batch do
 
     context 'when detail record' do
       it "should contain transactions records" do
-        expect(subject.to_s).to include("1342-342  3244654 530000000030John Doe                        R435564           453-543 45656733Remitter        00000000\r\n")
-        expect(subject.to_s).to include("1342-342  3244654 530000000020John Doe                        R435564           453-543 45656733Remitter        00000000\r\n")
+        expect(subject.to_s).to include("1342-342  3244654 500000000040John Doe                        R435564           453-543 45656733Remitter        00000000\r\n")
+        expect(subject.to_s).to include("1342-342  3244654 500000000030John Doe                        R435564           453-543 45656733Remitter        00000000\r\n")
+        expect(subject.to_s).to include("1342-342  3244654 130000000020John Doe                        R435564           453-543 45656733Remitter        00000000\r\n")
+        expect(subject.to_s).to include("1342-342  3244654 130000000010John Doe                        R435564           453-543 45656733Remitter        00000000\r\n")
       end
     end
 
     context 'when file total record' do
       context 'with unbalanced transactions' do
         it "should return a string wihere the net total is not zero" do
-          expect(subject.to_s).to include("7999-999            000000001000000000300000000020                        000002                                        ")
-        end
-      end
-
-      context 'with balanced transactions' do
-        let(:transaction_values) { [30, 30, -60] }
-
-        it "should return a string where the net total is zero" do
-          expect(subject.to_s).to include("7999-999            000000000000000000600000000060                        000003                                        ")
+          expect(subject.to_s).to include("7999-999            000000010000000000700000000030                        000004                                        ")
         end
       end
     end
@@ -89,9 +101,9 @@ describe Aba::Batch do
     it "adds new transaction to @transactions" do
       transaction = instance_double(
         Aba::Transaction,
-        :amount => 123,
-        :'kind_of?' => true
-      )
+        kind_of?: true,
+        amount: 123
+      ).as_null_object
 
       subject.add_transaction(transaction)
 
@@ -101,9 +113,9 @@ describe Aba::Batch do
     it "increases net amount of all transactions" do
       transaction = instance_double(
         Aba::Transaction,
-        amount: 12345,
-        :'kind_of?' => true
-      )
+        kind_of?: true,
+        amount: 12345
+      ).as_null_object
 
       expect{ subject.add_transaction(transaction) }
         .to change{ subject.net_total_amount }
@@ -114,9 +126,10 @@ describe Aba::Batch do
       it "increases credit amount of all transactions" do
         transaction = instance_double(
           Aba::Transaction,
+          kind_of?: true,
           amount: 34567,
-          :'kind_of?' => true
-        )
+          is_credit?: true
+        ).as_null_object
 
         expect{ subject.add_transaction(transaction) }
           .to change{ subject.credit_total_amount }
@@ -128,9 +141,10 @@ describe Aba::Batch do
       it "increases debit amount of all transactions" do
         transaction = instance_double(
           Aba::Transaction,
-          amount: -56789,
-          :'kind_of?' => true
-        )
+          kind_of?: true,
+          amount: 56789,
+          is_debit?: true
+        ).as_null_object
 
         expect{ subject.add_transaction(transaction) }
           .to change{ subject.debit_total_amount }
@@ -144,16 +158,16 @@ describe Aba::Batch do
       it "returns false" do
         transaction_1 = instance_double(
           Aba::Transaction,
-          :'kind_of?' => true,
-          :amount => 123,
-          :'valid?' => true
-        )
+          kind_of?: true,
+          amount: 123,
+          valid?: true
+        ).as_null_object
         transaction_2 = instance_double(
           Aba::Transaction,
-          :'kind_of?' => true,
-          :amount => 456,
-          :'valid?' => false
-        )
+          kind_of?: true,
+          amount: 456,
+          valid?: false
+        ).as_null_object
         subject.add_transaction(transaction_1)
         subject.add_transaction(transaction_2)
 
@@ -165,16 +179,16 @@ describe Aba::Batch do
       it "returns true" do
         transaction_1 = instance_double(
           Aba::Transaction,
-          :'kind_of?' => true,
-          :amount => 123,
-          :'valid?' => true
-        )
+          kind_of?: true,
+          amount: 123,
+          valid?: true
+        ).as_null_object
         transaction_2 = instance_double(
           Aba::Transaction,
-          :'kind_of?' => true,
-          :amount => 456,
-          :'valid?' => true
-        )
+          kind_of?: true,
+          amount: 456,
+          valid?: true
+        ).as_null_object
         subject.add_transaction(transaction_1)
         subject.add_transaction(transaction_2)
 
