@@ -131,13 +131,13 @@ describe Aba::Parser do
       end
 
       it "parses the line" do
-        expect(Aba::Parser::Transaction).to receive(:parse).with(transaction_line)
+        expect(Aba::Parser::Activity).to receive(:parse).with(transaction_line)
         subject.parse_line(transaction_line)
       end
 
       it "adds new transaction to current batch" do
         parsed_line = double
-        allow(Aba::Parser::Transaction).to receive(:parse).and_return(parsed_line)
+        allow(Aba::Parser::Activity).to receive(:parse).and_return(parsed_line)
 
         expect(batch).to receive(:add_transaction).with(parsed_line)
         subject.parse_line(transaction_line)
