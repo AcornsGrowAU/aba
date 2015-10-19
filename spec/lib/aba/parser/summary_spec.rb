@@ -17,12 +17,12 @@ describe Aba::Parser::Summary do
 
   describe ".parse_line" do
     it "returns parsed given line" do
-      line = "7999-999            000001850000000185000000000000                        000012                                        "
+      line = "7999-999            000001234500000678900000080235                        000012                                        "
       parsed_line = {
         bsb: "999-999",
-        net_total_amount: 18500,
-        credit_total_amount: 18500,
-        debit_total_amount: 0,
+        net_total_amount: 12345,
+        credit_total_amount: 67890,
+        debit_total_amount: 80235,
         count: 12
       }
 
