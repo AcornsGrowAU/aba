@@ -9,7 +9,7 @@ class Aba
     Aba::Batch.new(attrs, transactions)
   end
 
-  def self.parse(filepath)
-    Aba::Parser.new(filepath).parse
+  def self.parse(input)
+    Aba::Parser.parse(input)
   end
 end
