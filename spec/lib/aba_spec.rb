@@ -19,22 +19,12 @@ describe Aba do
     end
   end
 
-  describe "#parse" do
-    it "initializes instance of Aba::Parser with given path" do
-      filepath = double
-      allow(Aba::Parser).to receive(:new).and_return(double.as_null_object)
+  describe ".parse" do
+    it "calls Aba::Parser to parse given input" do
+      input = double
 
-      expect(Aba::Parser).to receive(:new).with(filepath)
-      described_class.parse(filepath)
-    end
-
-    it "parses given file" do
-      filepath = double
-      parser = double.as_null_object
-      allow(Aba::Parser).to receive(:new).and_return(parser)
-
-      expect(parser).to receive(:parse)
-      described_class.parse(filepath)
+      expect(Aba::Parser).to receive(:parse).with(input)
+      described_class.parse(input)
     end
   end
 end
