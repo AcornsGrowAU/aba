@@ -1,10 +1,10 @@
 class Aba
   class Parser
     class Headers < Line
-      RECORD_TYPE = "0"
+      RECORD_TYPES = ["0"]
 
-      def self.record_type
-        RECORD_TYPE
+      def self.record_types
+        RECORD_TYPES
       end
 
       def self.parse_line(line)

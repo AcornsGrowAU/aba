@@ -1,10 +1,10 @@
 class Aba
   class Parser
     class Activity < Line
-      RECORD_TYPE = "1"
+      RECORD_TYPES = ["1"]
 
-      def self.record_type
-        RECORD_TYPE
+      def self.record_types
+        RECORD_TYPES
       end
 
       def self.parse_line(line)

@@ -1,12 +1,12 @@
 class Aba
   class Parser
     class Line
-      def self.record_type
-        raise NoMethodError, "This method should return correct 'Record Type' value and be implemented inside a class which inherites from this class!"
+      def self.record_types
+        raise NoMethodError, "This method should return correct 'Record Type' values and be implemented inside a class which inherites from this class!"
       end
 
       def self.contains_valid_record_type?(line)
-        line[0] == self.record_type
+        self.record_types.include?(line[0])
       end
 
       def self.validate(line)
@@ -27,7 +27,7 @@ class Aba
 
         def self.validate_record_type(line)
           unless self.contains_valid_record_type?(line)
-            raise Aba::Parser::Error, "Line's 'Record Type' should be '#{self.record_type}'"
+            raise Aba::Parser::Error, "Line's 'Record Type' should be one of: '#{self.record_types.join(", ")}'"
           end
         end
 
