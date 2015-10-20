@@ -5,13 +5,13 @@ require "spec_helper"
 describe Aba::Parser::Summary do
   it { is_expected.to be_a_kind_of(Aba::Parser::Line) }
 
-  it "defines RECORD_TYPE constant with value '7'" do
-    expect(described_class::RECORD_TYPE).to eq('7')
+  it "defines RECORD_TYPES constant with Record Type values" do
+    expect(described_class::RECORD_TYPES).to eq(['7'])
   end
 
-  describe ".record_type" do
-    it "returns value defined in RECORD_TYPE constant" do
-      expect(described_class.record_type).to eq(described_class::RECORD_TYPE)
+  describe ".record_types" do
+    it "returns value defined in RECORD_TYPES constant" do
+      expect(described_class.record_types).to eq(described_class::RECORD_TYPES)
     end
   end
 
