@@ -86,13 +86,4 @@ describe Aba::Parser::Line do
       described_class.parse(line)
     end
   end
-
-  describe ".record_type" do
-    it "raises NoMethodError with proper message" do
-      message = "This method should return result of parsing given line and be implemented inside a class which inherites from this class!"
-
-      expect{ described_class.parse_line(instance_double(String)) }
-        .to raise_error(NoMethodError, message)
-    end
-  end
 end
