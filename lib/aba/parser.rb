@@ -117,15 +117,15 @@ class Aba
       end
 
       def self.is_net_total_amount_correct?(summary, batch)
-        summary[:net_total_amount] == batch.net_total_amount
+        summary[:net_total_amount] == batch.net_total_amount.abs
       end
 
       def self.is_credit_total_amount_correct?(summary, batch)
-        summary[:credit_total_amount] == batch.credit_total_amount
+        summary[:credit_total_amount] == batch.credit_total_amount.abs
       end
 
       def self.is_debit_total_amount_correct?(summary, batch)
-        summary[:debit_total_amount] == batch.debit_total_amount
+        summary[:debit_total_amount] == batch.debit_total_amount.abs
       end
 
       def self.is_count_of_transactions_correct?(summary, batch)
