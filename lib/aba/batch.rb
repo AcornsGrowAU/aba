@@ -2,8 +2,7 @@ class Aba
   class Batch
     include Aba::Validations
 
-    attr_reader :transactions, :net_total_amount, :credit_total_amount,
-      :debit_total_amount
+    attr_reader :transactions, :credit_total_amount, :debit_total_amount
     attr_accessor :bsb, :financial_institution, :user_name, :user_id,
       :description, :process_at
 
@@ -38,7 +37,6 @@ class Aba
       end
 
       @transactions = []
-      @net_total_amount    = 0
       @credit_total_amount = 0
       @debit_total_amount  = 0
 
@@ -73,7 +71,6 @@ class Aba
       end
 
       @transactions.push(transaction)
-      @net_total_amount += transaction.amount.to_i
       @credit_total_amount += transaction.amount.to_i if transaction.is_credit?
       @debit_total_amount += transaction.amount.to_i if transaction.is_debit?
 
@@ -104,6 +101,10 @@ class Aba
 
     def count
       @transactions.count
+    end
+
+    def net_total_amount
+      @credit_total_amount + @debit_total_amount
     end
 
     private

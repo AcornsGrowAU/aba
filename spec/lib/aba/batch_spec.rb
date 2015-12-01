@@ -19,10 +19,6 @@ describe Aba::Batch do
       expect(subject.transactions).to be_empty
     end
 
-    it "initializes @net_total_amount" do
-      expect(subject.net_total_amount).to be_zero
-    end
-
     it "initializes @credit_total_amount" do
       expect(subject.credit_total_amount).to be_zero
     end
@@ -110,18 +106,6 @@ describe Aba::Batch do
       expect(subject.transactions).to include(transaction)
     end
 
-    it "increases net amount of all transactions" do
-      transaction = instance_double(
-        Aba::Transaction,
-        kind_of?: true,
-        amount: 12345
-      ).as_null_object
-
-      expect{ subject.add_transaction(transaction) }
-        .to change{ subject.net_total_amount }
-        .to(subject.net_total_amount + transaction.amount)
-    end
-
     context "when credit transaction" do
       it "increases credit amount of all transactions" do
         transaction = instance_double(
@@ -202,6 +186,42 @@ describe Aba::Batch do
       subject.instance_variable_set(:@transactions, Array.new(5))
 
       expect(subject.count).to eq(5)
+    end
+  end
+
+  describe "#net_total_amount" do
+    context "when no transaction was added" do
+      it "returns 0" do
+        expect(subject.net_total_amount).to eq(0)
+      end
+    end
+
+    context "when some transactions were added" do
+      let(:raw_transaction) do
+        Aba::Transaction.new(
+          bsb: '342-342',
+          account_number: '3244654',
+          account_name: 'John Doe',
+          lodgement_reference: 'R435564',
+          trace_bsb: '453-543',
+          trace_account_number: '45656733',
+          name_of_remitter: 'Remitter'
+        )
+      end
+
+      it "returns sum of amount of all added transactions" do
+        credit_transaction = raw_transaction.clone
+        credit_transaction.transaction_code = 50
+        credit_transaction.amount = 10000
+        subject.add_transaction(credit_transaction)
+
+        debit_transaction = raw_transaction.clone
+        debit_transaction.transaction_code = 13
+        debit_transaction.amount = 2000
+        subject.add_transaction(debit_transaction)
+
+        expect(subject.net_total_amount).to eq(12000)
+      end
     end
   end
 end
