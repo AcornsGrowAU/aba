@@ -107,13 +107,29 @@ class Aba
 
       def self.summary_compatible_with_batch?(summary, batch)
         result = (
-          summary[:net_total_amount] == batch.net_total_amount &&
-          summary[:credit_total_amount] == batch.credit_total_amount &&
-          summary[:debit_total_amount] == batch.debit_total_amount &&
-          summary[:count] == batch.count
+          is_net_total_amount_correct?(summary, batch) &&
+          is_credit_total_amount_correct?(summary, batch) &&
+          is_debit_total_amount_correct?(summary, batch) &&
+          is_count_of_transactions_correct?(summary, batch)
         )
 
         return result
+      end
+
+      def self.is_net_total_amount_correct?(summary, batch)
+        summary[:net_total_amount] == batch.net_total_amount
+      end
+
+      def self.is_credit_total_amount_correct?(summary, batch)
+        summary[:credit_total_amount] == batch.credit_total_amount
+      end
+
+      def self.is_debit_total_amount_correct?(summary, batch)
+        summary[:debit_total_amount] == batch.debit_total_amount
+      end
+
+      def self.is_count_of_transactions_correct?(summary, batch)
+        summary[:count] == batch.count
       end
   end
 end
