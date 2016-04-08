@@ -13,21 +13,21 @@ class Aba
       elsif input.is_a?(String)
         return parse_text(input)
       else
-        raise Aba::Parser::Error, "Could not parse given input!"
+        raise self::Error, "Could not parse given input!"
       end
     end
 
     def self.parse_line(line)
       line = line.gsub("\r", "").gsub("\n", "")
 
-      if Aba::Parser::Headers.contains_valid_record_type?(line)
-        return Aba::Parser::Headers.handle(line)
-      elsif Aba::Parser::Activity.contains_valid_record_type?(line)
-        return Aba::Parser::Activity.handle(line)
-      elsif Aba::Parser::Summary.contains_valid_record_type?(line)
-        return Aba::Parser::Summary.handle(line)
+      if self::Headers.contains_valid_record_type?(line)
+        return self::Headers.handle(line)
+      elsif self::Activity.contains_valid_record_type?(line)
+        return self::Activity.handle(line)
+      elsif self::Summary.contains_valid_record_type?(line)
+        return self::Summary.handle(line)
       else
-        raise Aba::Parser::Error, "Could not parse given input!"
+        raise self::Error, "Could not parse given input!"
       end
     end
 
@@ -78,7 +78,7 @@ class Aba
 
           return [collection, batch]
         else
-          raise Aba::Parser::Error, "Previous batch wasn't finished when a new batch appeared"
+          raise self::Error, "Previous batch wasn't finished when a new batch appeared"
         end
       end
 
@@ -88,20 +88,20 @@ class Aba
 
           return [collection, batch]
         else
-          raise Aba::Parser::Error, "Transaction not within a batch"
+          raise self::Error, "Transaction not within a batch"
         end
       end
 
       def self.handle_summary(collection, batch, summary)
         if batch.nil?
-          raise Aba::Parser::Error, "Batch summary without a batch appeared"
+          raise self::Error, "Batch summary without a batch appeared"
         elsif summary_compatible_with_batch?(summary, batch)
           collection.push(batch)
           batch = nil
 
           return [collection, batch]
         else
-          raise Aba::Parser::Error, "Summary line doesn't match calculated summary of current batch"
+          raise self::Error, "Summary line doesn't match calculated summary of current batch"
         end
       end
 
