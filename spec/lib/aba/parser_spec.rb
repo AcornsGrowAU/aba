@@ -74,65 +74,26 @@ describe Aba::Parser do
     end
 
     context "when a starting batch line is given" do
-      it "parses given line" do
-        allow(Aba::Batch).to receive(:new)
+      it "handles batch line" do
+        expect(Aba::Parser::Headers).to receive(:handle).with(batch_line)
 
-        expect(Aba::Parser::Headers).to receive(:parse).with(batch_line)
         subject.parse_line(batch_line)
-      end
-
-      it "initializes new batch with parsed line" do
-        parsed_line = double
-        allow(Aba::Parser::Headers).to receive(:parse).and_return(parsed_line)
-        allow(Aba::Batch).to receive(:new)
-
-        expect(Aba::Batch).to receive(:new).with(parsed_line)
-        subject.parse_line(batch_line)
-      end
-
-      it "returns initialized batch" do
-        batch = double
-        allow(Aba::Batch).to receive(:new).and_return(batch)
-
-        expect(subject.parse_line(batch_line)).to eq(batch)
       end
     end
 
     context "when a transaction line is given" do
-      it "parses given line" do
-        allow(Aba::Transaction).to receive(:new)
+      it "handles transaction line" do
+        expect(Aba::Parser::Activity).to receive(:handle).with(transaction_line)
 
-        expect(Aba::Parser::Activity).to receive(:parse).with(transaction_line)
         subject.parse_line(transaction_line)
-      end
-
-      it "initializes new transaction with parsed line" do
-        parsed_line = double
-        allow(Aba::Parser::Activity).to receive(:parse).and_return(parsed_line)
-
-        expect(Aba::Transaction).to receive(:new).with(parsed_line)
-        subject.parse_line(transaction_line)
-      end
-
-      it "returns initialized transaction" do
-        transaction = double
-        allow(Aba::Transaction).to receive(:new).and_return(transaction)
-
-        expect(subject.parse_line(transaction_line)).to eq(transaction)
       end
     end
 
     context "when batch summary line is given" do
-      it "parses given line" do
-        expect(Aba::Parser::Summary).to receive(:parse).with(summary_line)
+      it "handles summary line" do
+        expect(Aba::Parser::Summary).to receive(:handle).with(summary_line)
+
         subject.parse_line(summary_line)
-      end
-
-      it "returns result of parsing given line" do
-        summary = double
-        allow(Aba::Parser::Summary).to receive(:parse).and_return(summary)
-
-        expect(subject.parse_line(summary_line)).to eq(summary)
       end
     end
 

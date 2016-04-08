@@ -15,6 +15,23 @@ describe Aba::Parser::Summary do
     end
   end
 
+  describe ".handle" do
+    let(:line) { instance_double(String) }
+
+    it "parses given line" do
+      expect(described_class).to receive(:parse).with(line)
+
+      described_class.handle(line)
+    end
+
+    it "returns result of parsing given line" do
+      summary = double('summary')
+      allow(described_class).to receive(:parse).and_return(summary)
+
+      expect(described_class.handle(line)).to eq(summary)
+    end
+  end
+
   describe ".parse_line" do
     it "returns parsed given line" do
       line = "7999-999            000001234500000678900000080235                        000012                                        "

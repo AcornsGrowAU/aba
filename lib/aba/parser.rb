@@ -21,11 +21,11 @@ class Aba
       line = line.gsub("\r", "").gsub("\n", "")
 
       if Aba::Parser::Headers.contains_valid_record_type?(line)
-        return Aba::Batch.new(Aba::Parser::Headers.parse(line))
+        return Aba::Parser::Headers.handle(line)
       elsif Aba::Parser::Activity.contains_valid_record_type?(line)
-        return Aba::Transaction.new(Aba::Parser::Activity.parse(line))
+        return Aba::Parser::Activity.handle(line)
       elsif Aba::Parser::Summary.contains_valid_record_type?(line)
-        return Aba::Parser::Summary.parse(line)
+        return Aba::Parser::Summary.handle(line)
       else
         raise Aba::Parser::Error, "Could not parse given input!"
       end

@@ -7,6 +7,10 @@ class Aba
         RECORD_TYPES
       end
 
+      def self.handle(line)
+        return self.parse(line)
+      end
+
       def self.parse_line(line)
         results = {
           bsb: line[1..7].strip,

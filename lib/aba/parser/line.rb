@@ -9,6 +9,10 @@ class Aba
         self.record_types.include?(line[0])
       end
 
+      def self.handle(line)
+        raise NoMethodError, "This method should implement expected way to handle given line and be implemented inside a class which inherites from this class!"
+      end
+
       def self.validate(line)
         self.validate_record_type(line)
         self.validate_length(line)
