@@ -37,6 +37,17 @@ describe Aba::Parser::Line do
     end
   end
 
+  describe ".handle" do
+    let(:line) { instance_double(String) }
+
+    it "raises NoMethodError with proper message" do
+      message = "This method should implement expected way to handle given line and be implemented inside a class which inherites from this class!"
+
+      expect{ described_class.handle(line) }
+        .to raise_error(NoMethodError, message)
+    end
+  end
+
   describe ".validate" do
     let(:valid_record_type) { "0" }
     let(:valid_record_types) { [valid_record_type] }

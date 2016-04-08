@@ -15,6 +15,36 @@ describe Aba::Parser::Activity do
     end
   end
 
+  describe ".handle" do
+    let(:line) { instance_double(String) }
+
+    it "parses given line" do
+      allow(Aba::Transaction).to receive(:new)
+
+      expect(described_class).to receive(:parse).with(line)
+
+      described_class.handle(line)
+    end
+
+    it "initializes new transaction with parsed line" do
+      parsed_line = double('parsed line')
+      allow(described_class).to receive(:parse).and_return(parsed_line)
+
+      expect(Aba::Transaction).to receive(:new).with(parsed_line)
+
+      described_class.handle(line)
+    end
+
+    it "returns initialized transaction" do
+      transaction = double('transaction')
+
+      allow(described_class).to receive(:parse).and_return(double)
+      allow(Aba::Transaction).to receive(:new).and_return(transaction)
+
+      expect(described_class.handle(line)).to eq(transaction)
+    end
+  end
+
   describe ".parse" do
     it "returns parsed given line" do
       line = "1342-342  3244654 530000012345John Doe                        R435564           453-543 45656733Remitter        00000010"
