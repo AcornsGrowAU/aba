@@ -6,10 +6,10 @@ require "aba/parser"
 
 class Aba
   def self.batch(attrs = {}, transactions = [])
-    Aba::Batch.new(attrs, transactions)
+    return Aba::Batch.new(attrs, transactions)
   end
 
   def self.parse(input)
-    Aba::Parser.parse(input)
+    return Aba::Parser.parse(input)
   end
 end

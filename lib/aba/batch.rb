@@ -61,6 +61,8 @@ class Aba
 
       # Batch control record
       output += "\r\n#{batch_control_record}"
+
+      return output
     end
 
     def add_transaction(attrs = {})
@@ -74,15 +76,15 @@ class Aba
       @credit_total_amount += transaction.amount.to_i if transaction.is_credit?
       @debit_total_amount += transaction.amount.to_i if transaction.is_debit?
 
-      transaction
+      return transaction
     end
 
     def transactions_valid?
-      !has_transaction_errors?
+      return !has_transaction_errors?
     end
 
     def valid?
-      !has_errors? && transactions_valid?
+      return (!has_errors? && transactions_valid?)
     end
 
     def errors
@@ -96,21 +98,21 @@ class Aba
       transaction_error_collection = @transactions.each_with_index.map{ |(k, t), i| [k, t.error_collection] }.reject{ |e| e[1].nil? || e[1].empty? }.to_h
       all_errors[:transactions] = transaction_error_collection unless transaction_error_collection.empty?
 
-      all_errors unless all_errors.empty?
+      return all_errors unless all_errors.empty?
     end
 
     def count
-      @transactions.count
+      return @transactions.count
     end
 
     def net_total_amount
-      @credit_total_amount + @debit_total_amount
+      return (@credit_total_amount + @debit_total_amount)
     end
 
     private
 
     def has_transaction_errors?
-      @transactions.map(&:valid?).include?(false)
+      return @transactions.map(&:valid?).include?(false)
     end
 
     def descriptive_record
@@ -170,10 +172,11 @@ class Aba
       # Max: 40
       # Char position: 81-120
       output += " " * 40
+
+      return output
     end
 
     def batch_control_record
-
       # Record type
       # Max: 1
       # Char position: 1
@@ -218,6 +221,8 @@ class Aba
       # Max: 40
       # Char position: 81-120
       output += " " * 40
+
+      return output
     end
   end
 end

@@ -14,7 +14,7 @@ class Aba
     end
 
     def valid?
-      !has_errors?
+      return !has_errors?
     end
 
     alias_method 'errors', 'error_collection'
@@ -61,7 +61,7 @@ class Aba
         end
       end
 
-      !self.error_collection.empty?
+      return !self.error_collection.empty?
     end
 
     module ClassMethods
