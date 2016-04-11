@@ -48,55 +48,59 @@ class Aba
     end
 
     def is_credit?
-      CREDIT_TRANSACTION_CODES.include?(transaction_code)
+      return CREDIT_TRANSACTION_CODES.include?(transaction_code)
     end
 
     def is_debit?
-      DEBIT_TRANSACTION_CODES.include?(transaction_code)
+      return DEBIT_TRANSACTION_CODES.include?(transaction_code)
     end
 
     # Allow dashes to be input, but remove them from output
     def account_number
-      @account_number ? @account_number.to_s.gsub('-', '') : nil
+      result = @account_number ? @account_number.to_s.gsub('-', '') : nil
+
+      return result
     end
 
     # Fall back to blank string
     def indicator
-      @indicator || Aba::Validations::INDICATORS.first
+      return (@indicator || Aba::Validations::INDICATORS.first)
     end
 
     # Fall back to 50
     def transaction_code
-      @transaction_code || 50
+      return (@transaction_code || 50)
     end
 
     # Fall back to 0
     def amount
-      @amount || 0
+      return (@amount || 0)
     end
 
     # Fall back to empty string
     def account_name
-      @account_name || ''
+      return (@account_name || '')
     end
 
     # Fall back to empty string
     def lodgement_reference
-      @lodgement_reference || ''
+      return (@lodgement_reference || '')
     end
 
     # Fall back to BSB
     def trace_bsb
-      @trace_bsb || bsb
+      return (@trace_bsb || bsb)
     end
 
     # Fall back to Account Number
     def trace_account_number
-      @trace_account_number ? @trace_account_number.to_s.gsub('-', '') : account_number
+      result = @trace_account_number ? @trace_account_number.to_s.gsub('-', '') : account_number
+
+      return result
     end
 
     def name_of_remitter
-      @name_of_remitter || ''
+      return (@name_of_remitter || '')
     end
 
     def to_s
@@ -152,6 +156,8 @@ class Aba
 
       # Withholding amount in cents
       output += (witholding_amount || 0).abs.to_s.rjust(8, "0")
+
+      return output
     end
   end
 end

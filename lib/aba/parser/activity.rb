@@ -4,7 +4,7 @@ class Aba
       RECORD_TYPES = ["1"]
 
       def self.record_types
-        RECORD_TYPES
+        return RECORD_TYPES
       end
 
       def self.handle(line)

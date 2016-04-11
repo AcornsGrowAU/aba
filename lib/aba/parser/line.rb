@@ -6,7 +6,7 @@ class Aba
       end
 
       def self.contains_valid_record_type?(line)
-        self.record_types.include?(line[0])
+        return self.record_types.include?(line[0])
       end
 
       def self.handle(line)
@@ -20,7 +20,9 @@ class Aba
 
       def self.parse(line)
         self.validate(line)
-        self.parse_line(line)
+        result = self.parse_line(line)
+
+        return result
       end
 
       def self.parse_line(line)
