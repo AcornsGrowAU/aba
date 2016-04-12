@@ -89,12 +89,21 @@ describe Aba::Parser::Line do
 
     it "validates given line" do
       expect(described_class).to receive(:validate).with(line)
+
       described_class.parse(line)
     end
 
     it "parses given line" do
       expect(described_class).to receive(:parse_line).with(line)
+
       described_class.parse(line)
+    end
+
+    it "returns result of parsing given line" do
+      parsed_line = double('parsed line')
+      allow(described_class).to receive(:parse_line).and_return(parsed_line)
+
+      expect(described_class.parse(line)).to eq(parsed_line)
     end
   end
 end
