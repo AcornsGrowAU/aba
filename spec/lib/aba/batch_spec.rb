@@ -37,11 +37,43 @@ describe Aba::Batch do
       expect(subject.transactions).to be_empty
     end
 
-    it "initializes @credit_total_amount" do
-      expect(subject.credit_total_amount).to be_zero
+    context "summary" do
+      it "initializes instance of summary" do
+        expect(described_class::Summary).to receive(:new)
+
+        subject
+      end
+
+      it "memoizes initialized instance of summary" do
+        summary = described_class::Summary.new
+        allow(described_class::Summary).to receive(:new).and_return(summary)
+
+        expect(subject.summary).to eq(summary)
+      end
     end
-    it "initializes @debit_total_amount" do
-      expect(subject.debit_total_amount).to be_zero
+  end
+
+  describe "#net_total_amount" do
+    it "is delegated to summary" do
+      expect(subject.summary).to receive(:net_total_amount)
+
+      subject.net_total_amount
+    end
+  end
+
+  describe "#credit_total_amount" do
+    it "is delegated to summary" do
+      expect(subject.summary).to receive(:credit_total_amount)
+
+      subject.credit_total_amount
+    end
+  end
+
+  describe "#debit_total_amount" do
+    it "is delegated to summary" do
+      expect(subject.summary).to receive(:debit_total_amount)
+
+      subject.debit_total_amount
     end
   end
 
@@ -98,12 +130,10 @@ describe Aba::Batch do
         end
       end
 
-      context 'when file total record' do
-        context 'with unbalanced transactions' do
-          it "should return a string wihere the net total is not zero" do
-            expect(subject.to_s).to include("7999-999            000000010000000000700000000030                        000004                                        ")
-          end
-        end
+      it "converts summary into summary record" do
+        expect(subject.summary).to receive(:to_s)
+
+        subject.to_s
       end
     end
   end
@@ -118,24 +148,10 @@ describe Aba::Batch do
         expect(subject.transactions).to include(argument)
       end
 
-      context "when credit transaction" do
-        it "increases credit amount of all transactions" do
-          transaction = Aba::Transaction.new(transaction_code: 50, amount: 100)
+      it "adds given argument to summary" do
+        expect(subject.summary).to receive(:add_transaction).with(argument)
 
-          expect{ subject.add_transaction(transaction) }
-            .to change{ subject.credit_total_amount }
-            .by(100)
-        end
-      end
-
-      context "when debit transaction" do
-        it "increases debit amount of all transactions" do
-          transaction = Aba::Transaction.new(transaction_code: 13, amount: 200)
-
-          expect{ subject.add_transaction(transaction) }
-            .to change{ subject.debit_total_amount }
-            .by(200)
-        end
+        subject.add_transaction(argument)
       end
 
       it "returns given argument" do
@@ -164,6 +180,14 @@ describe Aba::Batch do
         subject.add_transaction(argument)
 
         expect(subject.transactions).to include(transaction)
+      end
+
+      it "adds created instance of Aba::Transaction to summary" do
+        allow(Aba::Transaction).to receive(:new).and_return(transaction)
+
+        expect(subject.summary).to receive(:add_transaction).with(transaction)
+
+        subject.add_transaction(argument)
       end
 
      it "returns created instance of Aba::Transaction" do
