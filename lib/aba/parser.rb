@@ -36,7 +36,7 @@ class Aba
       batch = nil
 
       line = stream.gets
-      until line.nil?
+      until is_stream_finished?(line)
         result = parse_line(line)
         collection, batch = collect_results(collection, batch, result)
         line = stream.gets
@@ -59,6 +59,10 @@ class Aba
     end
 
     private
+
+      def self.is_stream_finished?(line)
+        return line.nil?
+      end
 
       def self.collect_results(collection, batch, result)
         if result.is_a?(Aba::Batch)
