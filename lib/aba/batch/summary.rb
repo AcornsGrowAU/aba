@@ -22,7 +22,7 @@ class Aba
       end
 
       def net_total_amount
-        return (@credit_total_amount + @debit_total_amount)
+        return (@credit_total_amount.abs - @debit_total_amount.abs)
       end
 
       def to_s

@@ -74,7 +74,10 @@ class Aba
 
     # Fall back to 0
     def amount
-      return (@amount || 0)
+      @amount ||= 0
+      @amount = (@amount.abs * -1) if is_debit?
+
+      return @amount
     end
 
     # Fall back to empty string

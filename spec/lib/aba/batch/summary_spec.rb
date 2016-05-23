@@ -56,7 +56,9 @@ describe Aba::Batch::Summary do
         subject.add_transaction(credit)
         subject.add_transaction(debit)
 
-        expect(subject.net_total_amount).to eq(credit.amount + debit.amount)
+        amount = credit.amount.abs - debit.amount.abs
+
+        expect(subject.net_total_amount).to eq(amount)
       end
     end
   end
@@ -66,7 +68,7 @@ describe Aba::Batch::Summary do
       subject.add_transaction(credit)
       subject.add_transaction(debit)
 
-      expect(subject.to_s).to eq("7999-999            000000030000000001000000000200                        000002                                        ")
+      expect(subject.to_s).to eq("7999-999            000000010000000001000000000200                        000002                                        ")
     end
   end
 end
