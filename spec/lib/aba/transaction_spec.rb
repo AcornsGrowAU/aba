@@ -54,6 +54,36 @@ describe Aba::Transaction do
     end
   end
 
+  describe "#amount" do
+    context "when no amount was set" do
+      before{ subject.amount = nil }
+
+      it "falls back to 0" do
+        expect(subject.amount).to eq(0)
+      end
+    end
+
+    context "when amount was set" do
+      before{ subject.amount = 12345 }
+
+      context "when transaction is credit type" do
+        before{ subject.transaction_code = 50 }
+
+        it "returns set value" do
+          expect(subject.amount).to eq(12345)
+        end
+      end
+
+      context "when transaction is debit type" do
+        before{ subject.transaction_code = 13 }
+
+        it "returns value set as negative" do
+          expect(subject.amount).to eq(-12345)
+        end
+      end
+    end
+  end
+
   describe "#to_s" do
     it "should create a transaction row" do
       expect(subject.to_s).to include("1345-453 23432342W530000050050John Doe                        R45343            123-234  4647642Remitter        00000087")

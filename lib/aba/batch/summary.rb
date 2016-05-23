@@ -44,7 +44,7 @@ class Aba
         # Net total
         # Max: 10
         # Char position: 21-30
-        output += net_total_amount.abs.to_s.rjust(10, "0")
+        output += (@credit_total_amount.abs + @debit_total_amount.abs).to_s.rjust(10, "0")
 
         # Credit Total Amount
         # Max: 10
