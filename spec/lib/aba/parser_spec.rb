@@ -76,24 +76,24 @@ describe Aba::Parser do
     end
 
     context "when a starting batch line is given" do
-      it "handles batch line" do
-        expect(Aba::Parser::Headers).to receive(:handle).with(batch_line)
+      it "parses batch line" do
+        expect(Aba::Parser::Headers).to receive(:parse).with(batch_line)
 
         subject.parse_line(batch_line)
       end
     end
 
     context "when a transaction line is given" do
-      it "handles transaction line" do
-        expect(Aba::Parser::Activity).to receive(:handle).with(transaction_line)
+      it "parses transaction line" do
+        expect(Aba::Parser::Activity).to receive(:parse).with(transaction_line)
 
         subject.parse_line(transaction_line)
       end
     end
 
     context "when batch summary line is given" do
-      it "handles summary line" do
-        expect(Aba::Parser::Summary).to receive(:handle).with(summary_line)
+      it "parses summary line" do
+        expect(Aba::Parser::Summary).to receive(:parse).with(summary_line)
 
         subject.parse_line(summary_line)
       end

@@ -21,11 +21,11 @@ class Aba
       line = line.gsub("\r", "").gsub("\n", "")
 
       if self::Headers.contains_valid_record_type?(line)
-        return self::Headers.handle(line)
+        return self::Headers.parse(line)
       elsif self::Activity.contains_valid_record_type?(line)
-        return self::Activity.handle(line)
+        return self::Activity.parse(line)
       elsif self::Summary.contains_valid_record_type?(line)
-        return self::Summary.handle(line)
+        return self::Summary.parse(line)
       else
         raise self::Error, "Could not parse given input!"
       end
