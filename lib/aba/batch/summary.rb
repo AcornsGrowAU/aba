@@ -74,7 +74,7 @@ class Aba
         return output
       end
 
-      private
+      protected
 
         def increase_credit_total_amount(amount)
           @credit_total_amount += amount.to_i
