@@ -5,43 +5,15 @@ require "spec_helper"
 describe Aba::Parser::Headers do
   it { is_expected.to be_a_kind_of(Aba::Parser::Line) }
 
-  it "defines RECORD_TYPES constant with Record Type values" do
-    expect(described_class::RECORD_TYPES).to eq(['0'])
-  end
-
-  describe ".record_types" do
-    it "returns value defined in RECORD_TYPES constant" do
-      expect(described_class.record_types).to eq(described_class::RECORD_TYPES)
+  describe ".valid_record_types" do
+    it "returns valid value for headers Record Type" do
+      expect(described_class.valid_record_types).to eq(["0"])
     end
   end
 
-  describe ".handle" do
-    let(:line) { instance_double(String) }
-
-    it "parses given line" do
-      allow(Aba::Batch).to receive(:new)
-
-      expect(described_class).to receive(:parse).with(line)
-
-      described_class.handle(line)
-    end
-
-    it "initializes new batch with parsed line" do
-      parsed_line = double('parsed line')
-      allow(described_class).to receive(:parse).and_return(parsed_line)
-
-      expect(Aba::Batch).to receive(:new).with(parsed_line)
-
-      described_class.handle(line)
-    end
-
-    it "returns initialized batch" do
-      batch = double('batch')
-
-      allow(described_class).to receive(:parse)
-      allow(Aba::Batch).to receive(:new).and_return(batch)
-
-      expect(described_class.handle(line)).to eq(batch)
+  describe ".valid_line_length" do
+    it "returns valid number of characters in headers line" do
+      expect(described_class.valid_line_length).to eq(120)
     end
   end
 
@@ -57,7 +29,27 @@ describe Aba::Parser::Headers do
         process_at: "210915"
       }
 
-      expect(described_class.parse(line)).to eq(parsed_line)
+      expect(described_class.parse_line(line)).to eq(parsed_line)
+    end
+  end
+
+  describe ".prepare_record" do
+    let(:arguments) { double('arguments') }
+
+    it "initializes instance of Aba::Batch with given arguments" do
+      expect(Aba::Batch).to receive(:new).with(arguments)
+
+      described_class.prepare_record(arguments)
+    end
+
+    it "returns initialized instance of Aba::Batch" do
+      transaction = Aba::Batch.new
+      allow(Aba::Batch)
+        .to receive(:new)
+        .with(arguments)
+        .and_return(transaction)
+
+      expect(described_class.prepare_record(arguments)).to eq(transaction)
     end
   end
 end
