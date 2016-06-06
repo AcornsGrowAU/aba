@@ -156,6 +156,16 @@ describe Aba::Parser do
       end
     end
 
+    it "skips empty lines" do
+      allow(input)
+        .to receive(:gets)
+        .and_return(batch_line, "", transaction_line, "", summary_line, "", nil)
+
+      expect(subject).to receive(:parse_line).with("").exactly(0).times
+
+      subject.parse_stream(input)
+    end
+
     it "returns parsed collection" do
       batch = Aba::Batch.new(
         bsb: "123-345",
@@ -233,6 +243,14 @@ describe Aba::Parser do
             .to raise_error(Aba::Parser::Error, message)
         end
       end
+    end
+
+    it "skips empty lines" do
+      text = [batch_line, "", transaction_line, "", summary_line, ""].join("\n")
+
+      expect(subject).to receive(:parse_line).with("").exactly(0).times
+
+      subject.parse_text(text)
     end
 
     it "returns parsed collection" do
