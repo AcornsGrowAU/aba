@@ -64,7 +64,7 @@ class Aba
       return collection
     end
 
-    private
+    protected
 
       def self.is_stream_finished?(line)
         return line.nil?
