@@ -1,4 +1,5 @@
 require "aba/version"
+require "aba/error"
 require "aba/validations"
 require "aba/batch"
 require "aba/transaction"
