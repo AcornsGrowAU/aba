@@ -5,7 +5,7 @@ require 'aba/parser/summary'
 
 class Aba
   class Parser
-    class Error < ::Exception; end
+    class Error < Aba::Error; end
 
     def self.parse(input)
       if input.respond_to?(:gets)

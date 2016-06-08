@@ -38,7 +38,7 @@ class Aba
 
       def validate!
         unless valid?
-          raise RuntimeError, 'Headers are invalid - check output of #errors method for more information'
+          raise Aba::Error, 'Headers are invalid - check output of #errors method for more information'
         end
       end
 

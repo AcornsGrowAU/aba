@@ -107,7 +107,7 @@ class Aba
     end
 
     def to_s
-      raise RuntimeError, 'Transaction data is invalid - check the contents of `errors`' unless valid?
+      raise Aba::Error, 'Transaction data is invalid - check the contents of `errors`' unless valid?
 
       # Record type
       output = "1"
@@ -116,7 +116,6 @@ class Aba
       output += bsb
 
       # Account number
-      #raise RuntimeError, 'Transaction is missing account_number' unless account_number
       output += account_number.to_s.rjust(9, " ")
 
       # Withholding Tax Indicator

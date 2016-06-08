@@ -33,7 +33,7 @@ describe Aba::Batch::Headers do
       it "raises an exception" do
         allow(subject).to receive(:valid?).and_return(false)
 
-        expect{ subject.validate! }.to raise_error(RuntimeError, /invalid/i)
+        expect{ subject.validate! }.to raise_error(Aba::Error, /invalid/i)
       end
     end
   end

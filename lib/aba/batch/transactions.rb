@@ -27,11 +27,11 @@ class Aba
 
       def validate!
         if @collection.empty?
-          raise RuntimeError, 'No transactions present - add one using #add_transaction method'
+          raise Aba::Error, 'No transactions present - add one using #add_transaction method'
         end
 
         unless valid?
-          raise RuntimeError, 'Some transactions are invalid - check output of #errors method for more information'
+          raise Aba::Error, 'Some transactions are invalid - check output of #errors method for more information'
         end
       end
 
