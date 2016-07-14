@@ -9,9 +9,9 @@ class Aba
 
     def self.parse(input)
       if input.respond_to?(:gets)
-        return parse_stream(input)
+        return self.parse_stream(input)
       elsif input.is_a?(String)
-        return parse_text(input)
+        return self.parse_text(input)
       else
         raise self::Error, "Could not parse given input!"
       end
@@ -72,11 +72,11 @@ class Aba
 
       def self.collect_results(collection, batch, result)
         if result.is_a?(Aba::Batch)
-          collection, batch = handle_batch(collection, batch, result)
+          collection, batch = self.handle_batch(collection, batch, result)
         elsif result.is_a?(Aba::Transaction)
-          collection, batch = handle_transaction(collection, batch, result)
+          collection, batch = self.handle_transaction(collection, batch, result)
         elsif result.is_a?(Hash)
-          collection, batch = handle_summary(collection, batch, result)
+          collection, batch = self.handle_summary(collection, batch, result)
         end
 
         return [collection, batch]
@@ -105,7 +105,7 @@ class Aba
       def self.handle_summary(collection, batch, summary)
         if batch.nil?
           raise self::Error, "Batch summary without a batch appeared"
-        elsif summary_compatible_with_batch?(summary, batch)
+        elsif self.summary_compatible_with_batch?(summary, batch)
           collection.push(batch)
           batch = nil
 
@@ -117,10 +117,10 @@ class Aba
 
       def self.summary_compatible_with_batch?(summary, batch)
         result = (
-          is_net_total_amount_correct?(summary, batch) &&
-          is_credit_total_amount_correct?(summary, batch) &&
-          is_debit_total_amount_correct?(summary, batch) &&
-          is_count_of_transactions_correct?(summary, batch)
+          self.is_net_total_amount_correct?(summary, batch) &&
+          self.is_credit_total_amount_correct?(summary, batch) &&
+          self.is_debit_total_amount_correct?(summary, batch) &&
+          self.is_count_of_transactions_correct?(summary, batch)
         )
 
         return result
