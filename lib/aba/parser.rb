@@ -41,9 +41,7 @@ class Aba
           line = stream.gets
           next
         end
-
-        result = self.parse_line(line)
-        collection, batch = self.collect_results(collection, batch, result)
+        collection, batch = self.handle_line(collection, batch, line)
         line = stream.gets
       end
 
@@ -57,8 +55,7 @@ class Aba
       text = text.split("\n")
       text.each do |line|
         next if line.strip.empty?
-        result = self.parse_line(line)
-        collection, batch = self.collect_results(collection, batch, result)
+        collection, batch = self.handle_line(collection, batch, line)
       end
 
       return collection
@@ -68,6 +65,13 @@ class Aba
 
       def self.is_stream_finished?(line)
         return line.nil?
+      end
+
+      def self.handle_line(collection, batch, line)
+        result = self.parse_line(line)
+        collection, batch = self.collect_results(collection, batch, result)
+
+        return [collection, batch]
       end
 
       def self.collect_results(collection, batch, result)
