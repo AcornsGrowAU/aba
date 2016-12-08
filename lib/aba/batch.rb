@@ -2,7 +2,9 @@ class Aba
   class Batch
     include Aba::Validations
 
-    attr_accessor :bsb, :financial_institution, :user_name, :user_id, :description, :process_at, :transactions
+    attr_reader :transactions, :credit_total_amount, :debit_total_amount
+    attr_accessor :bsb, :financial_institution, :user_name, :user_id,
+      :description, :process_at
 
     # BSB
     validates_bsb         :bsb, allow_blank: true
@@ -34,8 +36,9 @@ class Aba
         send("#{key}=", value)
       end
 
-      @transaction_index = 0
-      @transactions = {}
+      @transactions = []
+      @credit_total_amount = 0
+      @debit_total_amount  = 0
 
       unless transactions.nil? || transactions.empty?
         transactions.to_a.each do |t|
@@ -54,29 +57,34 @@ class Aba
       output = "#{descriptive_record}\r\n"
 
       # Transactions records
-      output += @transactions.map{ |t| t[1].to_s }.join("\r\n")
+      output += @transactions.map(&:to_s).join("\r\n")
 
       # Batch control record
       output += "\r\n#{batch_control_record}"
+
+      return output
     end
 
     def add_transaction(attrs = {})
-      if attrs.instance_of?(Aba::Transaction)
+      if attrs.kind_of?(Aba::Transaction)
         transaction = attrs
       else
         transaction = Aba::Transaction.new(attrs)
       end
-      @transactions[@transaction_index] = transaction
-      @transaction_index += 1
-      transaction
+
+      @transactions.push(transaction)
+      @credit_total_amount += transaction.amount.to_i if transaction.is_credit?
+      @debit_total_amount += transaction.amount.to_i if transaction.is_debit?
+
+      return transaction
     end
 
     def transactions_valid?
-      !has_transaction_errors?
+      return !has_transaction_errors?
     end
 
     def valid?
-      !has_errors? && transactions_valid?
+      return (!has_errors? && transactions_valid?)
     end
 
     def errors
@@ -90,13 +98,21 @@ class Aba
       transaction_error_collection = @transactions.each_with_index.map{ |(k, t), i| [k, t.error_collection] }.reject{ |e| e[1].nil? || e[1].empty? }.to_h
       all_errors[:transactions] = transaction_error_collection unless transaction_error_collection.empty?
 
-      all_errors unless all_errors.empty?
+      return all_errors unless all_errors.empty?
+    end
+
+    def count
+      return @transactions.count
+    end
+
+    def net_total_amount
+      return (@credit_total_amount + @debit_total_amount)
     end
 
     private
 
     def has_transaction_errors?
-      @transactions.map{ |t| t[1].valid? }.include?(false)
+      return @transactions.map(&:valid?).include?(false)
     end
 
     def descriptive_record
@@ -156,19 +172,11 @@ class Aba
       # Max: 40
       # Char position: 81-120
       output += " " * 40
+
+      return output
     end
 
     def batch_control_record
-      net_total_amount    = 0
-      credit_total_amount = 0
-      debit_total_amount  = 0
-
-      @transactions.each do |t|
-        net_total_amount += t[1].amount.to_i
-        credit_total_amount += t[1].amount.to_i if t[1].amount.to_i > 0
-        debit_total_amount += t[1].amount.to_i if t[1].amount.to_i < 0
-      end
-
       # Record type
       # Max: 1
       # Char position: 1
@@ -207,12 +215,14 @@ class Aba
       # Total Item Count
       # Max: 6
       # Char position: 75-80
-      output += @transactions.size.to_s.rjust(6, "0")
+      output += count.to_s.rjust(6, "0")
 
       # Reserved
       # Max: 40
       # Char position: 81-120
       output += " " * 40
+
+      return output
     end
   end
 end
