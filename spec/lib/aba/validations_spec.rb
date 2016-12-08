@@ -212,4 +212,22 @@ describe Aba::Validations do
       expect(subject.valid?).to eq true
     end
   end
+
+  describe ".inherited" do
+    let(:parent_class) do
+      Class.new(Object) do
+        include Aba::Validations
+
+        attr_accessor :test_attribute
+
+        validates_integer :test_attribute
+      end
+    end
+    let(:child_class) { Class.new(parent_class) }
+
+    it "duplicates validations" do
+      expect(child_class.instance_variable_get(:@_validations))
+        .to eq(parent_class.instance_variable_get(:@_validations))
+    end
+  end
 end
